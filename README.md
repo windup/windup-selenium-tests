@@ -19,7 +19,7 @@ The tests in classes SeleniumXXTest can be run as JUnit tests from within an IDE
    - run `$ ./run_rhamt.sh` script
 
 **Run a single test**
-From `windup-web/ui/` folder execute the command
+From `windup-selenium-tests/` folder execute the command
 ```bash
 $ mvn -Dtest=SeleniumXXTest clean test
 ```
