@@ -1,5 +1,7 @@
 # windup-selenium-tests
-Selenium tests for checking the operation of windup-web ui
+*Selenium tests for checking the operation of windup-web ui*
+
+Thanks to @elisedd for the original version of these tests
 
 This PR provides code which runs tests against the Web-UI which correspond to the test scripts [here in google docs](https://docs.google.com/spreadsheets/d/1BJGNnAlXPFARxo4Pk6FRiWVQXh-q_ZCQ32E9E_t8f0I/edit?ts=5b98e6c7#gid=814464998).
 
