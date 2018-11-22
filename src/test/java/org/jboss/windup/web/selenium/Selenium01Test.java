@@ -42,8 +42,6 @@ public class Selenium01Test extends TestCase {
 		/*
 		 * step 02
 		 */
-		// have to click cancel twice to get out of the name input
-		selenium.clickCancel();
 		selenium.clickCancel();
 		
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
