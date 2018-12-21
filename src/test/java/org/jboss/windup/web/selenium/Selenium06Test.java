@@ -12,6 +12,10 @@ import org.openqa.selenium.NoSuchElementException;
 
 import junit.framework.TestCase;
 
+/*
+ * Analysis with advanced options - Creates new Project Selenium06Test then verifies the advanced options
+ * have generated additional report content
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium06Test extends TestCase {
 
@@ -22,11 +26,13 @@ public class Selenium06Test extends TestCase {
 
 	}
 
-	public void test() throws AWTException, InterruptedException {
+	public void test01CreateProjectAdvancedOptions() throws AWTException, InterruptedException {
+
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+				new Object() {}.getClass().getEnclosingMethod().getName());
+
 		seleniumCreate = new CreateProject();
-		/*
-		 * Step 01
-		 */
+
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", seleniumCreate.checkURL());
 		seleniumCreate.clickProjButton();
 		assertEquals("http://127.0.0.1:8080/rhamt-web/wizard/create-project", seleniumCreate.checkURL());
@@ -35,20 +41,10 @@ public class Selenium06Test extends TestCase {
 		assertTrue(seleniumCreate.cancelEnabled());
 		assertFalse(seleniumCreate.nextEnabled());
 
-		/*
-		 * Step 02
-		 */
-		// checks for next being enabled after entering in 3 characters
-		seleniumCreate.inputProjName("abc");
-		assertTrue(seleniumCreate.nextEnabled());
-		seleniumCreate.clearProjName();
-		System.out.println(seleniumCreate.nextEnabled());
-		assertFalse(seleniumCreate.nextEnabled());
-
 		// properly inputs the project name & description
-		seleniumCreate.inputProjName("test 3");
+		seleniumCreate.inputProjName("Selenium06Test");
 		assertTrue(seleniumCreate.nextEnabled());
-		seleniumCreate.inputProjDesc("for the selenium test");
+		seleniumCreate.inputProjDesc("Selenium Test Project with multiple Applications and analysed using advanced options");
 
 		// checks that it redirects to the correct page
 		seleniumCreate.clickNext();
@@ -60,9 +56,6 @@ public class Selenium06Test extends TestCase {
 		assertEquals("Upload", seleniumCreate.activePanel());
 		assertFalse(seleniumCreate.nextEnabled());
 
-		/*
-		 * Step 03
-		 */
 		seleniumCreate.clickChooseFiles();
 
 		seleniumCreate.robotCancel();
@@ -72,9 +65,6 @@ public class Selenium06Test extends TestCase {
 		// checks that there are no files pulled up
 		assertTrue(seleniumCreate.voidFile());
 
-		/*
-		 * Step 04
-		 */
 		seleniumCreate.clickChooseFiles();
         File file = new File("src/test/resources/test-archives/AdministracionEfectivo.ear");
 		seleniumCreate.robotSelectFile(file.getAbsolutePath());
@@ -94,9 +84,6 @@ public class Selenium06Test extends TestCase {
 		seleniumCreate.robotCancel();
 		assertTrue(seleniumCreate.nextEnabled());
 
-		/*
-		 * Step 05
-		 */
 		assertTrue(seleniumCreate.nextEnabled());
 		seleniumCreate.clickNext();
 
@@ -134,15 +121,18 @@ public class Selenium06Test extends TestCase {
 
 		//runs the project with the above specifications
 		seleniumCreate.saveAndRun();
+
+		System.out.println(" About to Save and Run");
+
 		assertTrue(seleniumCreate.checkProgressBar());
 		assertTrue(seleniumCreate.analysisResultsComplete(1));
 
 	}
 
-	public void testReports() throws InterruptedException, AWTException {
+	public void test02CheckReports() throws InterruptedException, AWTException {
 	    seleniumAppLevel = new AppLevel();
 
-		seleniumAppLevel.navigateProject("test 3");
+		seleniumAppLevel.navigateProject("Selenium06Test");
 		Thread.sleep(5000);
 		seleniumAppLevel.clickAnalysisReport(1);
 		seleniumAppLevel.navigateTo(1);
@@ -156,6 +146,7 @@ public class Selenium06Test extends TestCase {
 		list.add("Technologies");
 		list.add("Unparsable");
 		list.add("Dependencies");
+		list.add("Dependencies Graph");
 		list.add("Compatible Files");
 		list.add("EJBs");
 		list.add("JPA");
@@ -189,9 +180,17 @@ public class Selenium06Test extends TestCase {
     @After
     public void tearDown()
     {
-        seleniumCreate.closeDriver();
-        seleniumAppLevel.closeDriver();
-    }
+		if (seleniumCreate != null)
+		{
+			seleniumCreate.closeDriver();
+		}
+
+		if (seleniumAppLevel != null)
+        {
+			seleniumAppLevel.closeDriver();
+		}
+
+  	}
 
 
 

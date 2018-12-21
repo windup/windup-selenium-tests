@@ -5,7 +5,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.openqa.selenium.NoSuchElementException;
 import java.awt.AWTException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +23,7 @@ public class AnalyzeProject extends CommonProject {
 		WebDriverWait wait = new WebDriverWait(driver, 10);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
 
-		navigateProject("test 2");
+		navigateProject("Selenium02Test");
 		waitForProjectLoad();
 		clickAnalysisReport(2);
 
@@ -105,10 +105,26 @@ public class AnalyzeProject extends CommonProject {
 
 		WebDriverWait wait = new WebDriverWait(driver,20);
 
-		tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
-		wait.until(ExpectedConditions.elementToBeClickable(tabs.findElement(
-				By.cssSelector("li:nth-child(" + index + ")" +
-				".active"))));
+
+		try
+		{
+			tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
+			wait.until(ExpectedConditions.elementToBeClickable(tabs.findElement(
+					By.cssSelector("li:nth-child(" + index + ")" +
+							".active"))));
+		}
+		catch (org.openqa.selenium.NoSuchElementException e)
+		{
+			System.out.println ("NoSuchElementException exception " +
+						new Object() {}
+								.getClass()
+								.getName() + ":" +
+						new Object() {}
+								.getClass()
+								.getEnclosingMethod().getName() + " " +
+						e.getMessage()
+						);
+		}
 
 	}
 
@@ -176,6 +192,10 @@ public class AnalyzeProject extends CommonProject {
 	 * @return
 	 */
 	public String clickAnalysisReport(int index) {
+
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+				new Object() {}.getClass().getEnclosingMethod().getName());
+
 		String xpath = "(//*[@class='success'])[" + index + "]";
 		WebElement result = driver.findElement(By.xpath(xpath));
 		xpath = "(//*[@class='pointer link'])[2]";
@@ -184,6 +204,8 @@ public class AnalyzeProject extends CommonProject {
 		String url = report.getAttribute("href");
 
 		report.click();
+
+		System.out.println("URL:" + url);
 
 		return url;
 	}
@@ -656,6 +678,10 @@ public class AnalyzeProject extends CommonProject {
 	 * @return an arraylsist of sorted strings
 	 */
 	private ArrayList<String> sortStringAsc(ArrayList<String> list) {
+
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+				new Object() {}.getClass().getEnclosingMethod().getName());
+
 		ArrayList<String> sorted = list;
 		System.out.println(sorted);
 		Collections.sort(sorted);
@@ -807,6 +833,10 @@ public class AnalyzeProject extends CommonProject {
 	 * @return true if the applications are sorted
 	 */
 	public boolean techApps() {
+
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+							new Object() {}.getClass().getEnclosingMethod().getName());
+
 		WebElement toggle = driver.findElement(By.cssSelector("td.sector:nth-child(1)"));
 
 		// Ascending
@@ -889,6 +919,9 @@ public class AnalyzeProject extends CommonProject {
 	
 	
 	public void test(ArrayList<Integer> appList) throws InterruptedException {
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+				new Object() {}.getClass().getEnclosingMethod().getName());
+
 		Thread.sleep(3000);
 		String[] names = {"markup", "mvc", "rich", "web", "ejb", "http", "messaging", "other", 
 				"rest", "webservice", "caching", "database", "database-driver", "object-mapping", 
@@ -902,6 +935,10 @@ public class AnalyzeProject extends CommonProject {
 	
 
 	public boolean sortTechHeader() {
+
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+				new Object() {}.getClass().getEnclosingMethod().getName());
+
 		WebElement header = driver.findElement(By.cssSelector("thead"));
 		WebElement body = driver.findElement(By.cssSelector("tbody"));
 
@@ -1206,8 +1243,8 @@ public class AnalyzeProject extends CommonProject {
 
 	public void waitForTabLoad()
 	{
-
-		WebDriverWait wait = new WebDriverWait(driver, 10);
+		//try increasing this from 10 seconds
+		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("ul.nav.navbar-nav li.active")));
 
 	}

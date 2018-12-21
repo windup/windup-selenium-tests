@@ -620,7 +620,9 @@ public class EditProject extends CommonProject {
 				x++;
 			}
 			catch (NoSuchElementException e) {
-				System.out.println("did not work");
+				System.out.println (new Object() {}.getClass().getName() + ":" +
+						new Object() {}.getClass().getEnclosingMethod().getName());
+				System.out.println("Delete did not work");
 				break;
 			}
 		}	

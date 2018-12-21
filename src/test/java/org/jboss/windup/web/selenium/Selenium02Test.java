@@ -8,6 +8,9 @@ import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
+/*
+ * Analyse multiple applications using new Project Selenium02Test
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium02Test extends TestCase {
 
@@ -15,13 +18,14 @@ public class Selenium02Test extends TestCase {
 
 	public void setUp() {
 		selenium = new CreateProject();
+        System.out.println(new Object() {}
+                .getClass()
+                .getEnclosingMethod()
+                .getName() + " complete");
 	}
 
-	public void testStep01_02() {
+	public void test01CreateProject() {
 
-		/*
-		 * Step 01
-		 */
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
 		selenium.clickProjButton();
 		assertEquals("http://127.0.0.1:8080/rhamt-web/wizard/create-project", selenium.checkURL());
@@ -30,19 +34,10 @@ public class Selenium02Test extends TestCase {
 		assertTrue(selenium.cancelEnabled());
 		assertFalse(selenium.nextEnabled());
 
-		/*
-		 * Step 02
-		 */
-		// checks for next being enabled after entering in 3 characters
-		selenium.inputProjName("abc");
-		assertTrue(selenium.nextEnabled());
-		selenium.clearProjName();
-		assertFalse(selenium.nextEnabled());
-
 		// properly inputs the project name & description
-		selenium.inputProjName("test 2");
+		selenium.inputProjName("Selenium02Test");
 		assertTrue(selenium.nextEnabled());
-		selenium.inputProjDesc("for the selenium test");
+		selenium.inputProjDesc("Selenium Test Project containing multiple Applications");
 
 
 		selenium.clickNext();
@@ -52,25 +47,16 @@ public class Selenium02Test extends TestCase {
 		assertTrue(selenium.checkURL().endsWith("/add-applications"));
 
 		assertFalse(selenium.nextEnabled());
+
+        System.out.println(new Object() {}
+                .getClass()
+                .getEnclosingMethod()
+                .getName() + " complete");
 	}
 
-	public void testStep03_05() throws AWTException, InterruptedException {
-		testStep01_02();
+	public void test02AddApps () throws AWTException, InterruptedException {
+		test01CreateProject();
 
-		/*
-		 * Step 03
-		 */
-		selenium.clickChooseFiles();
-
-		selenium.robotCancel();
-		// checks that the user has been returned to the correct page
-		assertTrue(selenium.checkURL().endsWith("/add-applications"));
-		// checks that there are no files pulled up
-		assertTrue(selenium.voidFile());
-
-		/*
-		 * Step 04
-		 */
 		selenium.clickChooseFiles();
 		// AdministracionEfectivo.ear
         File file = new File("src/test/resources/test-archives/AdministracionEfectivo.ear");
@@ -91,9 +77,6 @@ public class Selenium02Test extends TestCase {
 		selenium.robotCancel();
 		assertTrue(selenium.nextEnabled());
 		
-		/*
-		 * Step 05 
-		 */
 		assertTrue(selenium.nextEnabled());
 		selenium.clickNext();
 
@@ -104,23 +87,23 @@ public class Selenium02Test extends TestCase {
 				selenium.findPackages());
 		// checks that the three more detailed dialogue are compressed
 		assertTrue(selenium.collapesdInfo());
+
+        System.out.println(new Object() {}
+                .getClass()
+                .getEnclosingMethod()
+                .getName() + " complete");
 	}
 
-	public void testStep06_08() throws AWTException, InterruptedException {
-		testStep03_05();
+	public void test03RunAnalysis () throws AWTException, InterruptedException {
 
-		/*
-		 * Step 06
-		 */
+	    test02AddApps();
+
 		selenium.chooseTransformationPath(3);
 		assertEquals("Cloud readiness only", selenium.transformationPath());
 		
 		selenium.saveAndRun();
 		assertTrue(selenium.checkProgressBar());
 		
-		/*
-		 * Step 07
-		 */
 		selenium.clickAnalysisConfiguration();
 		
 		assertEquals("Cloud readiness only", selenium.transformationPath());
@@ -134,9 +117,6 @@ public class Selenium02Test extends TestCase {
 				"1\nantlr\ncom\njavassist\njavax\njunit\nmx\nnet\noracle\norg\nrepackage\nschemaorg_apache_xmlbeans",
 				selenium.findPackages());
 		
-		/*
-		 * Step 08
-		 */
 		selenium.deleteSelectedApplication(3);
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear\n" + 
 				"AdministracionEfectivo.ear", selenium.printSelectedApplications());
@@ -145,12 +125,22 @@ public class Selenium02Test extends TestCase {
 		assertTrue(selenium.checkProgressBar());
 		
 		assertTrue(selenium.analysisResultsComplete(2));
+
+		System.out.println(new Object() {}
+                .getClass()
+                .getEnclosingMethod()
+                .getName() + " complete");
 	}
 
 	@After
 	public void tearDown()
 	{
 		selenium.closeDriver();
+
+        System.out.println(new Object() {}
+                .getClass()
+                .getEnclosingMethod()
+                .getName() + " complete");
 	}
 
 }

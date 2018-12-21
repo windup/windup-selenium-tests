@@ -9,20 +9,21 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-
+/*
+ *Navigate through Project Level static reports from an analysis run of Project Selenium02Test
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium04Test extends TestCase {
 
 	private AnalyzeProject selenium;
 
 	public void setUp() throws InterruptedException {
+
 		selenium = new AnalyzeProject();
 	}
 
-	public void testStep01() throws InterruptedException, AWTException {
-		/*
-		 * Step 1
-		 */
+	public void test01AppListTabs() throws InterruptedException, AWTException {
+
 		assertEquals("Application List", selenium.headerTitle());
 		assertEquals("Application List", selenium.pageTitle());
 
@@ -33,86 +34,81 @@ public class Selenium04Test extends TestCase {
 		assertEquals("Technologies", selenium.pageTitle());
 
 		selenium.switchTab(4);
-		assertEquals("Dependencies", selenium.pageTitle());
+		assertEquals("Dependencies Graph", selenium.pageTitle());
 
 		selenium.switchTab(5);
+		assertEquals("Dependencies", selenium.pageTitle());
+
+		selenium.switchTab(6);
 		assertEquals("About", selenium.pageTitle());
 
 		selenium.switchTab(1);
 		selenium.clickSendFeedback();
-		/*
-		 * Step 2
-		 */
+
 		selenium.closeFeedback();
+
 	}
 
-	public void testAppList() throws AWTException {
+	public void test02AppListFilters() throws AWTException {
+
 		assertEquals("Application List", selenium.headerTitle());
 		assertEquals("Application List", selenium.pageTitle());
 
-		// Steps 3 - 4
 		assertTrue(selenium.applicationSort());
 
-		// Step 5
 		selenium.filterAppList("Name", "ad");
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, AdministracionEfectivo.ear]", selenium.listApplications().toString());
 
-		// Step 6
 		selenium.filterAppList("Tag", "JPA XML 2.0");
 		assertEquals("[AdministracionEfectivo.ear]", selenium.listApplications().toString());
 
-		// Step 7
 		selenium.changeRelationship("Matches any filter (OR)");
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, AdministracionEfectivo.ear]", selenium.listApplications().toString());
 		
-		// Step 8
 		selenium.clearFilters();
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, arit-ear-0.8.1-SNAPSHOT.ear, AdministracionEfectivo.ear]",
 				selenium.listApplications().toString());
 
-		// Step 9
 		selenium.filterAppList("Tag", "JPA XML 2.0");
 		assertEquals("[AdministracionEfectivo.ear]", selenium.listApplications().toString());
 		
-		// Step 10
 		assertTrue(selenium.deleteFilter("Tag: ", "JPA XML 2.0"));
 		assertEquals("[AdditionWithSecurity-EAR-0.01.ear, arit-ear-0.8.1-SNAPSHOT.ear, AdministracionEfectivo.ear]",
 				selenium.listApplications().toString());
+
 	}
 
-	public void testStep02() throws InterruptedException
+	public void test03AllIssuesReport() throws InterruptedException, AWTException
 	{
+
+		test01AppListTabs();
 
 		selenium.switchTab(2);
 		
-		// Step 11
 		assertEquals("All Issues", selenium.pageTitle());
 		String[] elementData = { "Migration Optional", "Cloud Mandatory", "Cloud Optional", "Information"};
 		ArrayList<String> issueTypes = new ArrayList<>(Arrays.asList(elementData));
 		assertEquals(issueTypes, selenium.allIssuesReport());
 
-		// Step 12
 		assertTrue(selenium.sortAllIssues());
 	
-		// Step 13
-
 		assertTrue(selenium.clickFirstIssue());
 		
-		// Step 14
 		selenium.clickShowRule();
 		
-		// Step 15
 		selenium.goBack();
 		assertFalse(selenium.showRuleVisible());
 	}
 
-	public void testStep03() throws InterruptedException {
-		// Step 16
+	public void test04TechnologiesReport() throws InterruptedException, AWTException {
+
+		test01AppListTabs();
+
 		selenium.switchTab(3);
 
 		assertEquals("Technologies", selenium.pageTitle());
 
-		// Step 17
+
 		// should be assertTrue but does not work on the page
 
 		ArrayList<Integer> size = selenium.collectColumn(27);
@@ -136,18 +132,28 @@ public class Selenium04Test extends TestCase {
 		
 		assertTrue(selenium.clickTechApp());
 
-		// Step 18
 		selenium.goBack();
 		assertEquals("Technologies", selenium.pageTitle());
+
 	}
 
-	public void testStep04() throws InterruptedException, AWTException {
-		// Step 19
+	public void test05DependencyGraph() throws InterruptedException ,AWTException {
 
+		test01AppListTabs();
+
+		// Check Dependencies Graph tab is available at Project Level
 		selenium.switchTab(4);
+
+		assertEquals("Dependencies Graph", selenium.pageTitle());
+	}
+
+	public void test06Dependencies() throws InterruptedException, AWTException {
+
+		test01AppListTabs();
+
+		selenium.switchTab(5);
 		assertEquals("Dependencies", selenium.pageTitle());
 		
-		// Step 20
 		String hash = selenium.clickMavenCoord();
 
 		Thread.sleep(1000);
@@ -161,12 +167,11 @@ public class Selenium04Test extends TestCase {
 		selenium.waitForTabLoad();
 	}
 
+	public void test07AboutLinks() throws InterruptedException, AWTException {
 
+		test01AppListTabs();
 
-
-	public void testStep05() {
-		// Step 21
-		selenium.switchTab(5);
+		selenium.switchTab(6);
 		assertEquals("About", selenium.pageTitle());
 
 		ArrayList<String> links = selenium.getAboutLinks();
@@ -181,35 +186,33 @@ public class Selenium04Test extends TestCase {
 		aboutLinks.add("https://issues.jboss.org/browse/WINDUP");
 
 		assertTrue(links.equals(aboutLinks));
+
 	}
 
-	public void testStep06() throws InterruptedException, AWTException {
-		selenium.switchTab(5);
+	public void test08Feedback() throws InterruptedException, AWTException {
+
+		test01AppListTabs();
+
+		selenium.switchTab(6);
 		assertEquals("About", selenium.pageTitle());
 		
-		//Step 39
 		selenium.clickSendFeedback();
 		selenium.moveToFeedback();
 		
-		//Step 40
 		selenium.selectFeedbackButton("awesome");
 		assertTrue(selenium.checkFeedbackButton("awesome"));
 		
-		// Step 41
 		selenium.selectFeedbackButton("good");
 		assertFalse(selenium.checkFeedbackButton("awesome"));
 		assertTrue(selenium.checkFeedbackButton("good"));
 		
-		// Step 42
 		selenium.submitFeedback();
 		assertTrue(selenium.submitError());
 		
-		// Step 43
 		selenium.populateTextBox();
 		File file = new File("src/test/resources/images/RHAMT-WebUI_Screenshot.png");
 		selenium.feedbackAttachFile(file.getAbsolutePath());
 		
-		// Step 46
 		selenium.feedbackPopulateEmail("email");
 		selenium.feedbackPopulateName("name");
 		assertTrue(selenium.popupRemoved("atlwdg-blanket"));

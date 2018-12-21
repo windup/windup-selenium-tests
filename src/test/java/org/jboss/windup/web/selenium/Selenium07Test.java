@@ -6,7 +6,9 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-
+/*
+ * Test the Project List and Maintenance
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium07Test extends TestCase {
 
@@ -16,54 +18,51 @@ public class Selenium07Test extends TestCase {
 		selenium = new CreateProject();
 	}
 
-	public void test() throws AWTException, InterruptedException {
-		//Step 1
+	public void test01ProjectListAndEdit() throws AWTException, InterruptedException {
+
+		System.out.println (new Object() {}.getClass().getName() + ":" +
+				new Object() {}.getClass().getEnclosingMethod().getName());
+
 		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
 		
-		//Step 2-3
 		selenium.sortProjectList("Created date", true);
-		//Step 4
+
 		assertTrue(selenium.sortApplications());
 		assertTrue(selenium.sortNames());
-		//Step 5
+
 		assertTrue(selenium.sortLastDate());
 		
-		//Step 6
-		assertTrue(selenium.editProject(3, "test 4"));
+
+		assertTrue(selenium.editProject(3, "Selenium06Test"));
 		
-		//Step 7 
+
 		selenium.updateProject();
 		Thread.sleep(4000);
-		assertTrue(selenium.checkUpdateProject(3, "test 4"));
+		assertTrue(selenium.checkUpdateProject(3, "Selenium06Test"));
 		
-		//Step 8
+
 		assertTrue(selenium.sortLastDate());
 		
-		//Step 9
+
 		selenium.projectSearch("2");
 		String list = selenium.listProjects().toString();
-		assertEquals(list, "[test 2]");
+		assertEquals(list, "[Selenium02Test]");
 		
-		//Step 10
 		selenium.clearProjectSearch();
 		list = selenium.listProjects().toString();
 		System.out.println(list);
-		assertEquals("[test, test 2, test 4]", list);
+		assertEquals("[Selenium01Test, Selenium02Test, Selenium06Test]", list);
 		
-		//Step 11
-		assertTrue(selenium.deleteProject("test"));
+		assertTrue(selenium.deleteProject("Selenium01Test"));
 		
-		//Step 12
 		assertTrue(selenium.cancelDeleteProject());
 		
-		//Step 13
-		assertTrue(selenium.deleteProject("test 4"));
-		
-		//Step 14
+		assertTrue(selenium.deleteProject("Selenium06Test"));
+
 		assertTrue(selenium.clickDeleteProject());
 		Thread.sleep(8000);
 		list = selenium.listProjects().toString();
-		assertEquals("[test, test 2]", list);
+		assertEquals("[Selenium01Test, Selenium02Test]", list);
 		
 	}
 
