@@ -3,6 +3,7 @@ package org.jboss.windup.web.selenium;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -697,8 +698,9 @@ public class CreateProject extends CommonProject {
 	 * @throws InterruptedException
 	 */
 	public boolean checkProgressBar() throws InterruptedException {
-		
-		WebElement progBar = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(
+
+		//Try increasing time out from 30 Seconds
+		WebElement progBar = (new WebDriverWait(driver, 120)).until(ExpectedConditions.presenceOfElementLocated(
 				By.cssSelector("wu-progress-bar")));
 		String text = progBar.getText();
 		
@@ -749,23 +751,40 @@ public class CreateProject extends CommonProject {
 	 * "show reports" and "delete" button available. If they are both present, then true is returned
 	 * 
 	 * @param numOfAnalysis denotes how many results there are to go through
-	 * @return true if all results have the "show reports" and "delte" actions
+	 * @return true if all results have the "show reports" and "delete" actions
 	 */
 	public boolean analysisResultsComplete(int numOfAnalysis) {
 		String xpath = "";
 		for (int x = 1; x <= numOfAnalysis; x++) {
 			xpath = "(//*[@class='success'])[" + numOfAnalysis + "]";
-			WebElement result = (new WebDriverWait(driver, 360)).until(ExpectedConditions.presenceOfElementLocated(
-					By.xpath(xpath)));
 			try {
-				xpath = "(//*[@class='pointer link'])[1]";
-				WebElement report = result.findElement(By.xpath(xpath));
-				xpath = "(//*[@class='pointer link'])[2]";
-				WebElement delete = result.findElement(By.xpath(xpath));
-				return true;
-			} catch (NoSuchElementException e) {
-				return false;
-			}
+                WebElement result = (new WebDriverWait(driver, 360)).until(ExpectedConditions.presenceOfElementLocated(
+                        By.xpath(xpath)));
+                try {
+                        xpath = "(//*[@class='pointer link'])[1]";
+                        WebElement report = result.findElement(By.xpath(xpath));
+                        xpath = "(//*[@class='pointer link'])[2]";
+                        WebElement delete = result.findElement(By.xpath(xpath));
+                        return true;
+                    }
+                catch (NoSuchElementException e)
+                    {
+                        return false;
+                    }
+                }
+            catch (TimeoutException e)
+                {
+                    System.out.println ("Timeout exception" +
+                            new Object() {}
+                                    .getClass()
+                                    .getName() + ":" +
+                            new Object() {}
+                                    .getClass()
+                                    .getEnclosingMethod()
+                                    .getName() + " searching for xpath " + xpath);
+                    return false;
+                }
+
 		}
 		return false;
 	}
@@ -1167,6 +1186,8 @@ public class CreateProject extends CommonProject {
 				}
 				
 			} catch (NoSuchElementException ex) {
+				System.out.println (new Object() {}.getClass().getName() + ":" +
+						new Object() {}.getClass().getEnclosingMethod().getName());
 				System.out.println("did not find descending button");
 				return false;
 			}

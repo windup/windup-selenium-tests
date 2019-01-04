@@ -9,6 +9,9 @@ import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 
+/*Navigate through Application Level Reports for project Selenium02Test
+ *for application AdministracionEfectivo.ear, then for application AdditionWithSecurity-EAR-0.01.ear
+ */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class Selenium05Test extends TestCase {
 
@@ -17,7 +20,7 @@ public class Selenium05Test extends TestCase {
 	public void setUp() throws InterruptedException {
 		selenium = new AppLevel();
 
-		selenium.navigateProject("test 2");
+		selenium.navigateProject("Selenium02Test");
 		selenium.waitForProjectLoad();
 		selenium.clickAnalysisReport(2);
 		Thread.sleep(5000);
@@ -25,8 +28,11 @@ public class Selenium05Test extends TestCase {
 		selenium.clickApplication("AdministracionEfectivo.ear");
 	}
 
-	public void test01() throws InterruptedException, AWTException {
-		//Step 1
+	public void test01App1Tabs() throws InterruptedException, AWTException {
+
+        System.out.println (new Object() {}.getClass().getName() + ":" +
+                new Object() {}.getClass().getEnclosingMethod().getName());
+
 		ArrayList<String> list = new ArrayList<>();
 		list.add("All Applications");
 		list.add("Dashboard");
@@ -35,6 +41,7 @@ public class Selenium05Test extends TestCase {
 		list.add("Technologies");
 		list.add("Unparsable");
 		list.add("Dependencies");
+		list.add("Dependencies Graph");
 		list.add("EJBs");
 		list.add("JPA");
 		list.add("Server Resources");
@@ -49,26 +56,21 @@ public class Selenium05Test extends TestCase {
 		
 		assertEquals(list, collectedList);
 
-		//Step 2
 		selenium.clickTab("Issues");
 		assertEquals("Issues", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		
-		//Step 3
 		// this also checks the yellow text box is there with its description and links
 		assertTrue(selenium.clickFirstIssue());
 
-		//Step 4
 		selenium.clickShowRule();
 		assertEquals("Rule Providers Execution Overview", selenium.pageTitle());
 		
-		//Step 5
 		selenium.goBack();
 		assertFalse(selenium.showRuleVisible());
 		assertEquals("Issues", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 
-		//Step 6
 		selenium.clickTab("Application Details");
 		assertEquals("Application Details", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
@@ -78,26 +80,21 @@ public class Selenium05Test extends TestCase {
 		assertTrue(selenium.findStoryPoints());
 		assertTrue(selenium.treeCollapsed());
 		
-		//Step 7
 		selenium.treeShowAll();
 		assertFalse(selenium.treeCollapsed());
 		
-		//Step 8
 		selenium.treeShowLess();
 		assertTrue(selenium.treeCollapsed());
 		
-		//Step 11
 		selenium.clickTab("Technologies");
 		assertEquals("Technologies", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 
-		//Step 14
 		selenium.clickTab("Unparsable");
 		assertEquals("Unparsable Files Report", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		assertEquals("[recepcionDeposito.xhtml]", selenium.unparsableFiles().toString());
 
-		//Step 12
 		selenium.clickTab("Dependencies");
 		assertEquals("Dependencies", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
@@ -162,74 +159,60 @@ public class Selenium05Test extends TestCase {
 		assertEquals(list.toString(), collectedList.toString());
 		
 		
-		//Step 13
 		String hash = selenium.clickMavenCoord();
 		Thread.sleep(2000);
 		selenium.navigateTo(2);
 		selenium.mavenSearch(hash);
 		assertTrue(selenium.checkURL().startsWith("https://search.maven.org"));
 		selenium.navigateTo(1);
-	}
 
-	public void test04() {
-		//Step 15
+		// EJBs Tab
 		selenium.clickTab("EJBs");
 		assertEquals("EJB Report", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		
-		//Step 16
 		String file = selenium.firstBean();
 		assertTrue(selenium.sourceReportFile(file));
 		assertEquals("Source Report", selenium.pageTitle());
 
-		//Step 17
 		selenium.goBack();
 		assertEquals("EJB Report", selenium.pageTitle());
 		
-		//Step 19
 		selenium.clickTab("JPA");
 		assertEquals("JPA Report", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		
-		//Step 20
 		file = selenium.clickJPAEntity();
 		assertTrue(selenium.sourceReportFile(file));
 		assertEquals("Source Report", selenium.pageTitle());
 		
-		//Step 21
 		selenium.goBack();
 		assertEquals("JPA Report", selenium.pageTitle());
 
-		//Step 18
 		selenium.clickTab("Server Resources");
 		assertEquals("Server Resources", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		assertEquals(1, selenium.dataSource());
 
-		//Step 22
 		selenium.clickTab("Hard-coded IP Addresses");
 		assertEquals("Hard-coded IP Addresses", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		
-		//Step 23
 		selenium.clickFirstLink();
 		//cannot check actual location scrolled into view
 		
-		//Step 24
 		selenium.goBack();
 
-		//Step 25
 		selenium.clickTab("Ignored Files");
 		assertEquals("Ignored Files", selenium.pageTitle());
 		assertEquals("AdministracionEfectivo.ear", selenium.pageApp());
 		assertEquals(44, selenium.ignoreFile());
 	}
 
-	public void test05() throws InterruptedException {
-		//Step 26
+	public void test02App2Tabs() throws InterruptedException {
+
 		selenium.clickTab("All Applications");
 		
-		//Step 27
 		selenium.clickApplication("AdditionWithSecurity-EAR-0.01.ear");
 		assertEquals("AdditionWithSecurity-EAR-0.01.ear", selenium.pageApp());
 
@@ -239,6 +222,7 @@ public class Selenium05Test extends TestCase {
 		list.add("Issues");
 		list.add("Application Details");
 		list.add("Technologies");
+		list.add("Dependencies Graph");
 		list.add("Dependencies");
 		list.add("Spring Beans");
 		list.add("Ignored Files");
