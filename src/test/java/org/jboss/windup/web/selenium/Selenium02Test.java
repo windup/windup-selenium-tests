@@ -26,9 +26,9 @@ public class Selenium02Test extends TestCase {
 
 	public void test01CreateProject() {
 
-		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
+		assertEquals(selenium.getRhamtBaseUrl() + "rhamt-web/project-list", selenium.checkURL());
 		selenium.clickProjButton();
-		assertEquals("http://127.0.0.1:8080/rhamt-web/wizard/create-project", selenium.checkURL());
+		assertEquals(selenium.getRhamtBaseUrl() + "rhamt-web/wizard/create-project", selenium.checkURL());
 
 		assertTrue(selenium.nameInputSelected());
 		assertTrue(selenium.cancelEnabled());

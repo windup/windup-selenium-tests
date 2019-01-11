@@ -18,16 +18,15 @@ public class Selenium03Test extends TestCase {
 
 	public void setUp() {
 		selenium = new EditProject();
-		}
+	}
 
 	public void test01ProjectList() throws ParseException {
-		
 		assertTrue(selenium.navigateProject("Selenium02Test"));
 		selenium.waitForProjectLoad("Selenium02Test");
 		assertTrue(selenium.checkURL().endsWith("/project-detail"));
 		
 		selenium.clickProjectsIcon();
-		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
+		assertEquals(selenium.getRhamtBaseUrl() + "rhamt-web/project-list", selenium.checkURL());
 
 		assertTrue(selenium.navigateProject("Selenium02Test"));
 		selenium.waitForProjectLoad("Selenium02Test");
@@ -99,8 +98,6 @@ public class Selenium03Test extends TestCase {
 
 	public void test03MaintainAnalysisRuns() throws InterruptedException {
 		assertTrue(selenium.navigateProject("Selenium02Test"));
-		
-
 		selenium.clickAnalysisConfiguration();
 
 		selenium.clickProjDropDown("Selenium01Test");

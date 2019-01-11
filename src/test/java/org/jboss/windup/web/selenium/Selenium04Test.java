@@ -18,7 +18,6 @@ public class Selenium04Test extends TestCase {
 	private AnalyzeProject selenium;
 
 	public void setUp() throws InterruptedException {
-
 		selenium = new AnalyzeProject();
 	}
 

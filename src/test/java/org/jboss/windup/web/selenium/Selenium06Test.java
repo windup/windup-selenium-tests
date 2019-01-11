@@ -22,9 +22,7 @@ public class Selenium06Test extends TestCase {
     CreateProject seleniumCreate;
     AppLevel seleniumAppLevel;
 
-	public void setUp() {
-
-	}
+	public void setUp() {}
 
 	public void test01CreateProjectAdvancedOptions() throws AWTException, InterruptedException {
 
@@ -33,9 +31,9 @@ public class Selenium06Test extends TestCase {
 
 		seleniumCreate = new CreateProject();
 
-		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", seleniumCreate.checkURL());
+		assertEquals(seleniumCreate.getRhamtBaseUrl() + "rhamt-web/project-list", seleniumCreate.checkURL());
 		seleniumCreate.clickProjButton();
-		assertEquals("http://127.0.0.1:8080/rhamt-web/wizard/create-project", seleniumCreate.checkURL());
+		assertEquals(seleniumCreate.getRhamtBaseUrl() + "rhamt-web/wizard/create-project", seleniumCreate.checkURL());
 
 		assertTrue(seleniumCreate.nameInputSelected());
 		assertTrue(seleniumCreate.cancelEnabled());
@@ -112,7 +110,7 @@ public class Selenium06Test extends TestCase {
 		//opens the Advanced options section
 		seleniumCreate.clickCollapsed("Advanced options");
 
-		//uner advanced options, this adds a new option
+		//user advanced options, this adds a new option
 		seleniumCreate.addOptions();
 		seleniumCreate.optionsDropdown("enableCompatibleFilesReport");
 		seleniumCreate.toggleValue(1);
@@ -133,7 +131,7 @@ public class Selenium06Test extends TestCase {
 	    seleniumAppLevel = new AppLevel();
 
 		seleniumAppLevel.navigateProject("Selenium06Test");
-		Thread.sleep(5000);
+		seleniumAppLevel.waitForProjectLoad();
 		seleniumAppLevel.clickAnalysisReport(1);
 		seleniumAppLevel.navigateTo(1);
 		seleniumAppLevel.clickApplication("AdministracionEfectivo.ear");

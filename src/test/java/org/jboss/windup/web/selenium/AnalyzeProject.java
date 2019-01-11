@@ -19,9 +19,7 @@ import java.util.Collections;
 public class AnalyzeProject extends CommonProject {
 
 	public AnalyzeProject() throws InterruptedException {
-
-		WebDriverWait wait = new WebDriverWait(driver, 10);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
+        waitForProjectList();
 
 		navigateProject("Selenium02Test");
 		waitForProjectLoad();
@@ -57,37 +55,6 @@ public class AnalyzeProject extends CommonProject {
 			driver.switchTo().window((String) tabs.get(index));
 			driver.switchTo().defaultContent();
 		}
-	}
-
-	/**
-	 * from the project list screen this will navigate to whichever project is given
-	 * by the name
-	 * 
-	 * @param projName
-	 *            the exact string form of the project name
-	 * @return true if the project is found
-	 */
-	public boolean navigateProject(String projName) {
-		// driver.navigate().to("http://127.0.0.1:8080/rhamt-web/project-list");
-		int x = 1;
-		while (true) {
-			try {
-				WebElement proj = driver
-						.findElement(By.xpath("(//*[@class='list-group-item  project-info  tile-click'])[" + x + "]"));
-
-				WebElement title = proj.findElement(By.cssSelector(
-						"div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1)"));
-				if (title.getText().equals(projName)) {
-					title.click();
-					return true;
-				}
-				x++;
-				continue;
-			} catch (NoSuchElementException e) {
-				break;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -742,9 +709,7 @@ public class AnalyzeProject extends CommonProject {
 	 * 
 	 * @return true if the expansion of the first issue is complete
 	 */
-	public boolean
-
-	clickFirstIssue() throws InterruptedException{
+	public boolean clickFirstIssue() throws InterruptedException{
 		WebElement table = driver.findElement(By.cssSelector("table.tablesorter:nth-child(1)"));
 		WebElement body = table.findElement(By.cssSelector("tbody"));
 		WebElement issue = body.findElement(By.cssSelector("tr:nth-child(1)"));
@@ -773,6 +738,9 @@ public class AnalyzeProject extends CommonProject {
 		int x = 1;
 		while (true) {
 			try {
+				// TODO: fix this sleep in a better way
+				Thread.sleep(5000);
+				wait.until(ExpectedConditions.visibilityOf(body.findElement(By.cssSelector("tr:nth-child(" + x + ")"))));
 				WebElement file = body.findElement(By.cssSelector("tr:nth-child(" + x + ")"));
 				WebElement incident = file.findElement(By.cssSelector("td.text-right"));
 				total += Integer.valueOf(incident.getText());
@@ -1226,27 +1194,9 @@ public class AnalyzeProject extends CommonProject {
 		modalYes.click();
 	}
 
-	/**
-	 * closes the browser
-	 */
-	public void closeDriver() {
-		driver.quit();
-	}
-
-	public void waitForProjectLoad()
-	{
-
-		WebDriverWait wait = new WebDriverWait(driver, 5);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".activated-item")));
-
-	}
-
 	public void waitForTabLoad()
 	{
-		//try increasing this from 10 seconds
 		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("ul.nav.navbar-nav li.active")));
-
 	}
-
 }
