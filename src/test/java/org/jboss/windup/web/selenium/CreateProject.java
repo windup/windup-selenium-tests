@@ -3,6 +3,7 @@ package org.jboss.windup.web.selenium;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -398,6 +399,13 @@ public class CreateProject extends CommonProject {
 		}
 		catch (NoSuchElementException e) {
 			Thread.sleep(1000);
+			findPackages();
+		}
+		/**
+		 * TODO Fix the issue in a better way
+		 */
+		catch (StaleElementReferenceException sere)
+		{
 			findPackages();
 		}
 		packageList = driver.findElement(By.cssSelector("ul.jstree-container-ul.jstree-children"));
