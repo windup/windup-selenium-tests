@@ -390,25 +390,27 @@ public class CreateProject extends CommonProject {
 	 * @throws InterruptedException
 	 */
 	public String findPackages() throws InterruptedException {
-		String xpath = "//*[@class='jstree-container-ul jstree-children']";
-		WebElement packageList = (new WebDriverWait(driver, 15)).until(ExpectedConditions.presenceOfElementLocated(
-				By.cssSelector("ul.jstree-container-ul.jstree-children")));
-		try {
-			WebElement leaf = packageList.findElement(By.cssSelector("li:nth-child(1)"));
-			
-		}
-		catch (NoSuchElementException e) {
-			Thread.sleep(1000);
-			findPackages();
-		}
-		/**
-		 * TODO Fix the issue in a better way
-		 */
-		catch (StaleElementReferenceException sere)
-		{
-			findPackages();
-		}
-		packageList = driver.findElement(By.cssSelector("ul.jstree-container-ul.jstree-children"));
+//		String xpath = "//*[@class='jstree-container-ul jstree-children']";
+//		WebElement packageList = (new WebDriverWait(driver, 15)).until(ExpectedConditions.presenceOfElementLocated(
+//				By.cssSelector("ul.jstree-container-ul.jstree-children")));
+//		try {
+//			WebElement leaf = packageList.findElement(By.cssSelector("li:nth-child(3)"));
+//			
+//		}
+//		catch (NoSuchElementException e) {
+//			Thread.sleep(1000);
+//			findPackages();
+//		}
+//		/**
+//		 * TODO Fix the issue in a better way
+//		 */
+//		catch (StaleElementReferenceException sere)
+//		{
+//			findPackages();
+//		}
+		WebElement itemInList = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("li.jstree-node")));
+		WebElement packageList = driver.findElement(By.cssSelector("ul.jstree-container-ul.jstree-children"));
 		return packageList.getText();
 	}
 	
