@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
+
 /*
  * Test the Project List and Maintenance
  */
@@ -23,7 +24,7 @@ public class Selenium07Test extends TestCase {
 		System.out.println (new Object() {}.getClass().getName() + ":" +
 				new Object() {}.getClass().getEnclosingMethod().getName());
 
-		assertEquals("http://127.0.0.1:8080/rhamt-web/project-list", selenium.checkURL());
+		assertEquals(selenium.getRhamtBaseUrl() + "rhamt-web/project-list", selenium.checkURL());
 		
 		selenium.sortProjectList("Created date", true);
 

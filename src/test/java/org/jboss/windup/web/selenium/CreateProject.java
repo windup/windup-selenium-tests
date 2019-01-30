@@ -3,6 +3,7 @@ package org.jboss.windup.web.selenium;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -33,10 +34,15 @@ public class CreateProject extends CommonProject {
 	private WebElement fileUpload;
 	private WebElement checkbox;
 
-	public CreateProject() {
+	public CreateProject()
+	{
+		this(true);
+	}
 
-		WebDriverWait wait = new WebDriverWait(driver, 15);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
+	public CreateProject(boolean otherProjectsAlreadyCreated)
+	{
+		if (otherProjectsAlreadyCreated) waitForProjectList();
+		else waitForNoProjectWelcomePage();
 	}
 
 	/**
@@ -45,7 +51,7 @@ public class CreateProject extends CommonProject {
 	 * http://127.0.0.1:8080/rhamt-web/wizard/create-project
 	 */
 	public void clickNewProjButton() {
-		WebDriverWait wait = new WebDriverWait(driver, 10);
+		WebDriverWait wait = new WebDriverWait(driver, 30);
 		wait.until(ExpectedConditions.elementToBeClickable(By.className("blank-slate-pf-main-action")));
 		projButton = driver.findElement(By.className("blank-slate-pf-main-action"));
 		projButton.click();
@@ -57,7 +63,10 @@ public class CreateProject extends CommonProject {
 	 * http://127.0.0.1:8080/rhamt-web/wizard/create-project
 	 */
 	public void clickProjButton() {
-		projButton = driver.findElement(By.cssSelector("button.btn.btn-primary"));
+		By byCondition = By.cssSelector("button.btn.btn-primary");
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.until(ExpectedConditions.elementToBeClickable(byCondition));
+		projButton = driver.findElement(byCondition);
 		projButton.click();
 	}
 
@@ -243,7 +252,7 @@ public class CreateProject extends CommonProject {
 	public String checkFileInfo(int index) {
 		String xpath = "(//*[@class='progress-bar success'])[" + index + "]";
 		// have to wait a bit for the file to upload
-		WebElement file = (new WebDriverWait(driver, 5)) 
+		WebElement file = (new WebDriverWait(driver, 100)) 
 				.until(ExpectedConditions.presenceOfElementLocated(By.xpath(xpath)));
 
 		xpath = "(//*[@class='file-info'])[" + index + "]";
@@ -262,6 +271,9 @@ public class CreateProject extends CommonProject {
 	public boolean checkForEmptyFile(int index) {
 		String xpath = "(//*[@class='progress-bar success'])[" + index + "]";
 		try {
+			WebDriverWait wait = new WebDriverWait(driver, 10);
+			wait.until(
+					ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
 			WebElement file = driver.findElement(By.xpath(xpath));
 		} catch (NoSuchElementException e) {
 			return true;
@@ -294,10 +306,9 @@ public class CreateProject extends CommonProject {
 	 * @return
 	 */
 	public String popupInfo() {
-
-		WebElement modalTitle = (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(
+		WebElement modalTitle = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(
 				By.cssSelector("h1.modal-title")));
-		WebElement modalBody = (new WebDriverWait(driver, 5)).until(ExpectedConditions.visibilityOfElementLocated(
+		WebElement modalBody = (new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOfElementLocated(
 				By.cssSelector("div.modal-body")));
 		return modalTitle.getText() + ";" + modalBody.getText();
 	}
@@ -379,18 +390,27 @@ public class CreateProject extends CommonProject {
 	 * @throws InterruptedException
 	 */
 	public String findPackages() throws InterruptedException {
-		String xpath = "//*[@class='jstree-container-ul jstree-children']";
-		WebElement packageList = (new WebDriverWait(driver, 15)).until(ExpectedConditions.presenceOfElementLocated(
-				By.cssSelector("ul.jstree-container-ul.jstree-children")));
-		try {
-			WebElement leaf = packageList.findElement(By.cssSelector("li:nth-child(1)"));
-			
-		}
-		catch (NoSuchElementException e) {
-			Thread.sleep(1000);
-			findPackages();
-		}
-		packageList = driver.findElement(By.cssSelector("ul.jstree-container-ul.jstree-children"));
+//		String xpath = "//*[@class='jstree-container-ul jstree-children']";
+//		WebElement packageList = (new WebDriverWait(driver, 15)).until(ExpectedConditions.presenceOfElementLocated(
+//				By.cssSelector("ul.jstree-container-ul.jstree-children")));
+//		try {
+//			WebElement leaf = packageList.findElement(By.cssSelector("li:nth-child(3)"));
+//			
+//		}
+//		catch (NoSuchElementException e) {
+//			Thread.sleep(1000);
+//			findPackages();
+//		}
+//		/**
+//		 * TODO Fix the issue in a better way
+//		 */
+//		catch (StaleElementReferenceException sere)
+//		{
+//			findPackages();
+//		}
+		WebElement itemInList = (new WebDriverWait(driver, 30)).until(ExpectedConditions.presenceOfElementLocated(
+				By.cssSelector("li.jstree-node")));
+		WebElement packageList = driver.findElement(By.cssSelector("ul.jstree-container-ul.jstree-children"));
 		return packageList.getText();
 	}
 	
@@ -597,8 +617,9 @@ public class CreateProject extends CommonProject {
 	 * @return true if the given options value is true, false otherwise
 	 */
 	public boolean value(int num) {
-
 		WebElement container = driver.findElement(By.cssSelector("wu-analysis-context-advanced-options"));
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		wait.until(ExpectedConditions.invisibilityOf(container.findElement(By.className("input-group"))));
 		WebElement value = container.findElement(By.cssSelector("tr:nth-child(" + num + ") > td:nth-child(2)"));
 		if (value.getText().equals("true")) {
 			return true;
@@ -698,15 +719,8 @@ public class CreateProject extends CommonProject {
 	 * @throws InterruptedException
 	 */
 	public boolean checkProgressBar() throws InterruptedException {
-
-		//Try increasing time out from 30 Seconds
 		WebElement progBar = (new WebDriverWait(driver, 120)).until(ExpectedConditions.presenceOfElementLocated(
 				By.cssSelector("wu-progress-bar")));
-		String text = progBar.getText();
-		
-		if (text.equals("There is no active analysis.")) {
-			return false;
-		}
 		return true;
 	}
 
@@ -862,9 +876,12 @@ public class CreateProject extends CommonProject {
 		if (working == true) {
 			WebElement cancel = driver.findElement(By.cssSelector("button.cancel-button.btn.btn-lg.btn-default"));
 			WebElement delete = driver.findElement(By.cssSelector("button.confirm-button.btn.btn-lg.btn-danger"));
-			
+			WebDriverWait  wait = new WebDriverWait(driver, 60);
+			wait.until(ExpectedConditions.and(
+					ExpectedConditions.elementToBeClickable(cancel),
+					ExpectedConditions.not(ExpectedConditions.elementToBeClickable(delete))
+			));
 			if (cancel.isEnabled() && !delete.isEnabled()) {
-				WebDriverWait  wait = new WebDriverWait(driver, 60);
 				WebElement input = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input#resource-to-delete")));
 				input.sendKeys(projName);
 				return delete.isEnabled();
@@ -1250,20 +1267,20 @@ public class CreateProject extends CommonProject {
 	public boolean editProject(int index, String s) {
 		String xpath = "(//*[@class='list-group-item  project-info  tile-click'])[" + index + "]";
 		WebElement project = driver.findElement(By.xpath(xpath));
-		
 		WebElement edit = project.findElement(By.cssSelector("a.action-button.action-edit-project"));
 		edit.click();
 		WebElement name = null;
 		WebElement description = null;
 		try {
-
+			WebDriverWait wait = new WebDriverWait(driver, 30);
+			wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input#idProjectTitle")));
 			name = driver.findElement(By.cssSelector("input#idProjectTitle"));
 			name.clear();
 			name.sendKeys(s);
-
 			description = driver.findElement(By.cssSelector("textarea#idDescription"));
 		} 
 		catch (NoSuchElementException e) {
+			e.printStackTrace();
 			return false;
 		}
 		return name.isEnabled() && description.isEnabled();
@@ -1312,13 +1329,5 @@ public class CreateProject extends CommonProject {
 		WebElement searchContainer = driver.findElement(By.cssSelector("wu-search"));
 		WebElement clear = searchContainer.findElement(By.cssSelector("button.clear"));
 		clear.click();
-	}
-	
-
-	/**
-	 * closes the browser
-	 */
-	public void closeDriver() {
-		driver.quit();
 	}
 }

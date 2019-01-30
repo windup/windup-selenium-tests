@@ -11,11 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 public class AppLevel extends CommonProject {
 
-	public AppLevel() throws InterruptedException {
-
-		WebElement header = (new WebDriverWait(driver, 10))
-				.until(ExpectedConditions.presenceOfElementLocated(By.id("header-logo")));
-
+	public AppLevel()
+	{
+		waitForProjectList();
 	}
 
 	/**
@@ -54,34 +52,6 @@ public class AppLevel extends CommonProject {
 		WebElement tabs = driver.findElement(By.cssSelector("ul.nav.navbar-nav"));
 		WebElement tab = tabs.findElement(By.cssSelector("li:nth-child(" + index + ")"));
 		tab.click();
-	}
-	
-	/**
-	 * from the project list screen this will navigate to whichever project is given by the name
-	 * @param projName the exact string form of the project name
-	 * @return true if the project is found
-	 */
-	public boolean navigateProject(String projName) {
-		// driver.navigate().to("http://127.0.0.1:8080/rhamt-web/project-list");
-		int x = 1;
-		while (true) {
-			try {
-				WebElement proj = driver
-						.findElement(By.xpath("(//*[@class='list-group-item  project-info  tile-click'])[" + x + "]"));
-
-				WebElement title = proj.findElement(By.cssSelector(
-						"div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > a:nth-child(1)"));
-				if (title.getText().equals(projName)) {
-					title.click();
-					return true;
-				}
-				x++;
-				continue;
-			} catch (NoSuchElementException e) {
-				break;
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -719,21 +689,4 @@ public class AppLevel extends CommonProject {
 		}
 		return "null";
 	}
-
-	/**
-	 * closes the browser
-	 */
-	public void closeDriver() {
-		driver.quit();
-	}
-
-	public void waitForProjectLoad()
-	{
-
-		WebDriverWait wait = new WebDriverWait(driver, 5);
-		wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".activated-item")));
-
-
-	}
-
 }
