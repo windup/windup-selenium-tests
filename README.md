@@ -20,6 +20,7 @@ The tests in classes SeleniumXXTest can be run as JUnit tests from within an IDE
 
 ## Run tests
 ### Run a single test
+Note there are dependencies between the Tests, documented in the google doc linked above. So only a subset of the tests can be ran in isolation. Each Test has a 2 digit number so replace XX in the command below with the appropriate number e.g. 01
 From `windup-selenium-tests/` folder execute the command
 ```bash
 $ mvn -Dtest=SeleniumXXTest clean test
