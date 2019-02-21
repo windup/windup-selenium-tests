@@ -1,15 +1,15 @@
 # windup-selenium-tests
 *Selenium tests for checking the operation of windup-web ui*
 
-Thanks to @elisedd for the original version of these tests
+Thanks to [@elisedd](https://github.com/elisedd) for the original version of these tests
 
-This PR provides code which runs tests against the Web-UI which correspond to the test scripts [here in google docs](https://docs.google.com/spreadsheets/d/1BJGNnAlXPFARxo4Pk6FRiWVQXh-q_ZCQ32E9E_t8f0I/edit?ts=5b98e6c7#gid=814464998).
+This PR provides code which runs tests against the Web-UI which correspond to the test scripts [here in google docs]( https://docs.google.com/spreadsheets/d/11LC8PYUxAmoMngBbFYJebZys69qNNvNxJx8iCadpZLQ/).
 
 The main difference here to previous versions is that the tests run in headless mode using the Chrome browser Selenium driver.
 
 The tests in classes SeleniumXXTest can be run as JUnit tests from within an IDE though the intention is to run them as a suite on the CI server eventually.
 
-**Pre-requisites**
+## Pre-requisites
 
 - install Chrome in [standard directory](https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver#requirements)
 - install locally [ChromeDriver](https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver)
@@ -18,8 +18,25 @@ The tests in classes SeleniumXXTest can be run as JUnit tests from within an IDE
    - unzip it
    - run `$ ./run_rhamt.sh` script
 
-**Run a single test**
+## Run tests
+### Run a single test
+Note there are dependencies between the Tests, documented in the google doc linked above. So only a subset of the tests can be ran in isolation. Each Test has a 2 digit number so replace XX in the command below with the appropriate number e.g. 01
+
 From `windup-selenium-tests/` folder execute the command
 ```bash
 $ mvn -Dtest=SeleniumXXTest clean test
 ```
+
+### Run the test suite
+From `windup-selenium-tests/` folder execute the command
+```bash
+$ mvn -Dtest=SeleniumSuiteTest clean test
+```
+### Tests parameters
+The tests default behaviour is to test in headless mode a RHAMT instance running at `localhost:8080` without authentication.
+
+The following options provide you a way to change the default settings:
+
+* `-DwithLogin` = enables the tests to execute the login to RHAMT
+* `-DbaseUrl=http://rhamt.example.com/` = enables the tests to work with a remote RHAMT instance 
+* `-Dheadless=false` = disable the browser headless mode so that the user can check what happens during tests' execution
