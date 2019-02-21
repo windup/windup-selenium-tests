@@ -3,7 +3,7 @@
 
 Thanks to [@elisedd](https://github.com/elisedd) for the original version of these tests
 
-This PR provides code which runs tests against the Web-UI which correspond to the test scripts [here in google docs](https://docs.google.com/spreadsheets/d/1BJGNnAlXPFARxo4Pk6FRiWVQXh-q_ZCQ32E9E_t8f0I/edit?ts=5b98e6c7#gid=814464998).
+This PR provides code which runs tests against the Web-UI which correspond to the test scripts [here in google docs]( https://docs.google.com/spreadsheets/d/11LC8PYUxAmoMngBbFYJebZys69qNNvNxJx8iCadpZLQ/).
 
 The main difference here to previous versions is that the tests run in headless mode using the Chrome browser Selenium driver.
 
